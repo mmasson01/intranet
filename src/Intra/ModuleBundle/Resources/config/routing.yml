@@ -1,0 +1,94 @@
+intra_module:
+    pattern:  /
+    defaults: { _controller: IntraModuleBundle:Module:index }
+
+intra_module_formulaire_module:
+    pattern:  /form_module
+    defaults: { _controller: IntraModuleBundle:Module:formulaireModule }
+
+intra_module_formulaire_activite:
+    pattern:  /form_activite
+    defaults: { _controller: IntraModuleBundle:Module:formulaireActivite }
+
+intra_module_ajouter_module:
+    pattern:  /ajouter_module
+    defaults: { _controller: IntraModuleBundle:Module:ajouterModule }
+
+intra_module_ajouter_activite:
+    pattern:  /ajouter_activite
+    defaults: { _controller: IntraModuleBundle:Module:ajouterActivite }
+
+intra_module_ajouter_bareme:
+    pattern:  /activite/{id}/ajouter_bareme
+    defaults: { _controller: IntraModuleBundle:Module:ajouterBareme }
+
+intra_module_modifier_bareme:
+    pattern:  /activite/{activiteid}/modifier_bareme/{baremeid}
+    defaults: { _controller: IntraModuleBundle:Module:modifierBareme }
+
+intra_module_remove_bareme:
+    pattern:  /activite/{activiteid}/remove_bareme/{baremeid}
+    defaults: { _controller: IntraModuleBundle:Module:removeBareme }
+
+intra_module_remove_module:
+    pattern:  /remove_module
+    defaults: { _controller: IntraModuleBundle:Module:removeModule }
+
+intra_module_remove_activite:
+    pattern:  /remove_activite
+    defaults: { _controller: IntraModuleBundle:Module:removeActivite }
+
+intra_module_voir_module:
+    pattern:  /module
+    defaults: { _controller: IntraModuleBundle:Module:voirModule }
+
+intra_module_inscription_module:
+    pattern:  /inscription_module
+    defaults: { _controller: IntraModuleBundle:Module:inscriptionModule }
+
+intra_module_desinscription_module:
+    pattern:  /desinscription_module
+    defaults: { _controller: IntraModuleBundle:Module:desinscriptionModule }
+
+intra_module_inscrit_module:
+    pattern:  /inscrit_module
+    defaults: { _controller: IntraModuleBundle:Module:inscritModule }
+
+intra_module_modifier_module:
+    pattern:  /modifier_module
+    defaults: { _controller: IntraModuleBundle:Module:modifierModule }
+
+intra_module_modifier_activite:
+    pattern:  /modifier_activite
+    defaults: { _controller: IntraModuleBundle:Module:modifierActivite }
+
+intra_module_voir_activite:
+    pattern:  /activite
+    defaults: { _controller: IntraModuleBundle:Module:voirActivite }
+
+intra_module_inscription_activite:
+    pattern:  /inscription_activite
+    defaults: { _controller: IntraModuleBundle:Module:inscriptionActivite }
+
+intra_module_desinscription_activite:
+    pattern:  /desinscription_activite
+    defaults: { _controller: IntraModuleBundle:Module:desinscriptionActivite }
+
+intra_module_inscrit_activite:
+    pattern:  /inscrit_activite
+    defaults: { _controller: IntraModuleBundle:Module:inscritActivite }
+
+intra_module_formulaire_modification_module:
+    pattern:  /modification_module
+    defaults: { _controller: IntraModuleBundle:Module:formulaireModificationModule }
+
+intra_module_formulaire_modification_activite:
+    pattern:  /modification_activite
+    defaults: { _controller: IntraModuleBundle:Module:formulaireModificationActivite }
+
+intra_module_show_bareme:
+    pattern:  /activite/{activiteid}/show_bareme/{baremeid}
+    defaults: { _controller: IntraModuleBundle:Module:showBareme }
+    requirements:
+        activiteid:  \d+
+        baremeid:    \d+

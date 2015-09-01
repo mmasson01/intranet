@@ -1,0 +1,58 @@
+{% extends "IntraForumBundle::layout.html.twig" %}
+
+{% block title %}
+  	{{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	{% if categorie is defined %}
+
+		{% if sous_categories is defined %}
+			<h4>Liste des sous-catégories</h4>
+			<div class="list-group">
+			{% for categorie in sous_categories %}
+					<a href="{{ path('intra_forum_voir_categorie', {'id' : categorie.getId()} ) }}" class="list-group-item">{{ categorie.getName() }}</a>
+			{% endfor %}
+			</div>
+		{% endif %}
+
+		<div class="panel panel-default">
+		  <div class="panel-heading">{{ categorie.getName() }}</div>
+		  <div class="panel-body">
+		    <span class="glyphicon glyphicon-plus"></span><a href="{{ path('intra_forum_formulaire_thread', {'id' : categorie.getId()}) }}"> Ajouter un Thread</a>
+		  </div>
+		</div>
+
+		{% for thread in threads %}
+
+		<div class="list-group">
+		  <a href="{{ path('intra_forum_voir_thread', {'id' : thread.getId() }) }}" class="list-group-item">
+		    <h4 class="list-group-item-heading">
+		    {{ thread.getSujet()|length > 50 ? thread.getSujet()|slice(0, 50) ~ '...' : thread.getSujet() }}
+
+		    {% if is_granted('ROLE_ADMIN') %}
+		    	<form class="pull-right" action="{{ path('intra_forum_remove_thread') }}" method="POST">
+					<input type="hidden" id="_id" name ="_id" value="{{ thread.getId() }}">
+					<input type="hidden" id="_id_categorie" name ="_id_categorie" value="{{ categorie.getId() }}">
+					<button type="submit" class="btn btn-default btn-xs">
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</form>
+			{% endif %}
+
+		    </h4>
+		    <p class="list-group-item-text">{{ thread.getAuteur() }} - {{ thread.getDateActivite()|date('Y-m-d h:m') }}
+		    </p>
+		  </a>
+		</div>
+
+		{% endfor %}
+
+		{% if threads is empty %}
+		<p>Aucun thread pour cette catégorie</p>
+		{% endif %}
+
+	{% endif %}
+
+{% endblock %}

@@ -1,0 +1,11 @@
+intra_admin_interface:
+    pattern:  /
+    defaults: { _controller: IntraAdminBundle:Admin:interface }
+
+intra_admin_tickets:
+    pattern:  /tickets
+    defaults: { _controller: IntraAdminBundle:Admin:tickets }
+
+intra_admin_ticket_remove:
+    pattern:  /remove
+    defaults: { _controller: IntraAdminBundle:Admin:remove }

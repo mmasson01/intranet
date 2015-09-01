@@ -1,0 +1,23 @@
+{% extends "::layout.html.twig" %}
+
+{% block title %}
+   Annuaire - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+  <h2>Annuaire</h2>
+  
+  <hr>
+  <ul class="pagination">
+	{% for letter in 'a'..'z' %}
+	<li><a href="{{ path('intra_annuaire_search', { 'letter': letter } ) }}">{{ letter }}</a></li>
+	{% endfor %}
+  </ul>
+
+  <hr>
+
+  {% block intramain_body %}
+  {% endblock %}
+
+{% endblock %}

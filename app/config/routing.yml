@@ -1,0 +1,51 @@
+intra_correction:
+    resource: "@IntraCorrectionBundle/Resources/config/routing.yml"
+    prefix:   /correction
+
+intra_module:
+    resource: "@IntraModuleBundle/Resources/config/routing.yml"
+    prefix:   /module
+
+intra_forum:
+    resource: "@IntraForumBundle/Resources/config/routing.yml"
+    prefix:   /forum
+
+intra_admin:
+    resource: "@IntraAdminBundle/Resources/config/routing.yml"
+    prefix:   /admin
+
+intra_ticket:
+    resource: "@IntraTicketBundle/Resources/config/routing.yml"
+    prefix:   /ticket
+
+intra_annuaire:
+    resource: "@IntraAnnuaireBundle/Resources/config/routing.yml"
+    prefix:   /annuaire
+
+intra_user:
+    resource: "@IntraUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
+intra_main:
+    resource: "@IntraMainBundle/Resources/config/routing.yml"
+    prefix:   /
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix: /profile
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /register
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix: /profile
+

@@ -1,0 +1,125 @@
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+
+{# Voici le script en question : #}
+<script type="text/javascript"> 
+$(document).ready(function() {
+	// On recupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous interesse.
+	var $container = $('div#intra_modulebundle_bareme_criteres');
+	//var $containerPoint = $("div[class='points']");
+	// On ajoute un lien pour ajouter un nouveau critere
+	var $lienAjoutCritere = $('<a href="#" id="ajout_critere" class="btn btn-primary">Ajouter un critère</a>');
+	$container.append($lienAjoutCritere);
+
+	// On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+	$lienAjoutCritere.click(function(e) {
+		ajouterCritere($container);
+		e.preventDefault(); // évite qu'un # apparaisse dans l'URL return false;
+	});
+	// On definit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+	var index = $container.find(':input').length;
+	
+	
+	// On ajoute un premier champ directement s'il n'en existe pas dejà un (cas d'un nouvel article par exemple).
+	if (index == 0) {
+		ajouterCritere($container);
+	} else {
+		// Pour chaque catégorie déjà existante, on ajoute un lien de suppression
+		$container.children('div').each(
+			function() {
+				ajouterLienSuppression($(this));
+			}
+			);
+	}
+
+	// La fonction qui ajoute un formulaire Categorie
+	function ajouterCritere($container) {
+		// Dans le contenu de l'attribut « data-prototype », on remplace :
+		// - le texte "__name__label__" qu'il contient par le label du champ
+		// - le texte "__name__" qu'il contient par le numero du champ 
+		var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, 'Critère n°' + (index+1)).replace(/__name__/g, index));
+		
+		var $containerPoint = $prototype.find("div.points");
+		ajouterPoint($containerPoint);
+		ajouterLienAjouterPoint($containerPoint);
+		
+
+		// On ajoute au prototype un lien pour pouvoir supprimer la categorie
+		ajouterLienSuppression($prototype);
+		// On ajoute le prototype modifie à la fin de la balise <div>
+		$container.append($prototype);
+		// Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numero
+		index++;
+	}
+
+	// La fonction qui ajoute un lien de suppression d'une categorie
+	function ajouterLienAjouterPoint($containerPoint) {
+		$lienAjouterPoint = $('<a href="#" id="ajout_point" class="btn btn-primary">Ajouter un point</a>');
+		// Ajout du lien
+		$containerPoint.before($lienAjouterPoint);
+		//var $containerPoint = $prototype.find("div.points");
+		$lienAjouterPoint.click(function(e) {
+
+			ajouterPoint($containerPoint);
+			e.preventDefault(); // évite qu'un # apparaisse dans l'URL return false;
+		});
+	}
+
+	// La fonction qui ajoute un formulaire Categorie
+	function ajouterPoint($containerPoint) {
+		// Dans le contenu de l'attribut « data-prototype », on remplace :
+		// - le texte "__name__label__" qu'il contient par le label du champ
+		// - le texte "__name__" qu'il contient par le numero du champ 
+		
+		var pointindex = $containerPoint.find(':input').length;
+		var $prototypePoint = $($containerPoint.attr('data-prototype').replace(/points_namelabel__/g, 'Point n°' + (pointindex+1)).replace(/points_name/g, pointindex));
+		// On ajoute au prototype un lien pour pouvoir supprimer la categorie
+		ajouterLienSuppression($prototypePoint);
+		// On ajoute le prototypePoint modifie à la fin de la balise <div>
+		$containerPoint.append($prototypePoint);
+		// Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numero
+		pointindex++;
+		$containerPoint.addClass("row");
+		$containerPoint.children("div").addClass("col-xs-2 form-group");
+		$containerPoint.siblings("label").hide();
+		$containerPoint.find("label").last().hide();
+		$containerPoint.find("input").addClass("form-control");
+		$containerPoint.find("input").val('0');	
+	}
+
+	// La fonction qui ajoute un lien de suppression d'une categorie
+	function ajouterLienSuppression($prototype) {
+		// Creation du lien
+		$lienSuppression = $('<a href="#" class="btn btn-danger">Supprimer</a>'); 
+
+		// Ajout du lien
+		$prototype.append($lienSuppression);
+		
+		// Ajout du listener sur le clic du lien
+		$lienSuppression.click(function(e) {
+			$prototype.remove();
+			e.preventDefault(); // évite qu'un # apparaisse dans l'URL 
+			return false;
+		});
+	}
+});
+</script>
+
+
+
+
+<form method="post" id="form" {{ form_enctype(form) }}>
+
+	{{ form_errors(form) }}
+	<div class="form-group">
+    {{ form_row(form.name, {'label': 'Nom', 'attr': {'class': 'form-control', 'rows': '1', 'placeholder': 'Nom du bareme' }}) }}
+    </div>
+
+
+
+{{ form_rest(form) }}
+	<input type="submit" value="Envoyer" class="btn btn-primary"/>
+</form>
+
+

@@ -1,0 +1,11 @@
+user_profile:
+    pattern:  /user/{login}
+    defaults: { _controller: IntraUserBundle:User:user }
+
+user_search:
+    pattern:  /search
+    defaults: { _controller: IntraUserBundle:User:search }
+
+user_update:
+    pattern:  /update
+    defaults: { _controller: IntraUserBundle:User:update }

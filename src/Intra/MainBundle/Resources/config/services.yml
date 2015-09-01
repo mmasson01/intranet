@@ -1,0 +1,7 @@
+parameters:
+#    intra_main.example.class: Intra\MainBundle\Example
+
+services:
+#    intra_main.example:
+#        class: %intra_main.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

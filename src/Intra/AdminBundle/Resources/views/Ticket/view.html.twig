@@ -1,0 +1,53 @@
+{% extends "IntraAdminBundle::layout.html.twig" %}
+
+{% block title %}
+  Tickets - {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+  {% if tickets is empty %}
+  	<p>Vous n'avez soumis aucun ticket</p>
+  {% endif %}
+
+  	<div class="table-responsive">
+	 	<table class="table table-hover">
+	 		<tr><th>Titre</th><th>Priorité</th><th>Date de soumission</th><th>Etat</th><th>Attribué à</th><th>Auteur</th><th></th></tr>
+
+		  {% for ticket in tickets %}
+		    
+		  	{% if ticket.getEtat() == "En attente" %}
+		  		<tr class="warning">
+		  	{% elseif ticket.getEtat() == "En cours" %}
+		  		<tr class="info">
+		  	{% elseif ticket.getEtat() == "Résolut" %}
+		  		<tr class="success">
+		  	{% elseif ticket.getEtat() == "Fermé" %}
+		  		<tr>
+		  	{% endif %}
+		  	<td><a href="{{ path('intra_ticket_read', {'id' : ticket.getId()} ) }}">{{ ticket.getTitre()|length > 25 ? ticket.getTitre()|slice(0, 25) ~ '...' : ticket.getTitre() }}</a></td>
+		  	<td>{{ ticket.getPriorite() }}</td>
+		  	<td>{{ ticket.getDatetime()|date('Y-m-d') }}</td>
+		  	<td>{{ ticket.getEtat() }}</td>
+		  	<td>
+		  		{% if ticket.getAdmin() is not null %}
+		  			{{ ticket.getAdmin() }}
+		  		{% else %}
+		  			Aucun
+		  		{% endif %}
+		  	</td>
+		  	<td>{{ ticket.getAuteur() }}</td>
+		  	<td>
+		  	<form action="{{ path('intra_ticket_remove') }}" method="POST">
+		  	<input type="hidden" id="_id" name ="_id" value="{{ ticket.getId() }}">
+		  	<button type="submit" class="btn btn-default btn-xs"><span type="submit" class="glyphicon glyphicon-remove"></span></button>
+		  	</td>
+		  	</form>
+		  	</tr>
+
+		  {% endfor %}
+
+  		</table>
+	</div>
+
+{% endblock %}

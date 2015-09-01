@@ -1,0 +1,42 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  Correction - {{ parent() }}
+{% endblock %}
+
+
+
+{% block intramain_body %}
+
+<h3>{{ bareme.name }}</h3>	
+<form role="form" method="post" action={{ path('intra_correction_enregistrer') }}>
+	{% for critere in bareme.criteres %}
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h5 class="panel-title"> sujet : {{ critere.titre }}</h5>
+		</div>
+		<div class="panel-body">
+			<p> desciption : {{ critere.description }}</p>
+			
+				<div class="row">
+					{% for point in critere.points %}		
+					<div class="col-xs-2">
+						<input type="radio" name="_note" value="point" {% if loop.first %} checked {% endif %}> {{ point.number }}<br>
+					</div>
+					{% endfor %}
+				</div>
+		</div>
+		<div class="panel-footer">
+				<div class="form-group">
+			  	<label for="contenu">Message</label>
+			  	<textarea class="form-control" rows="6" id="contenu" name="_content"></textarea>
+			  </div>
+			
+		</div>
+	</div>
+	{% endfor %}
+	<input type="hidden" name="_id_correction" value="{{ correction.getId() }}">
+	<button class="btn btn-default" type="submit">Enregistrer</button>
+</form>
+
+{% endblock %}

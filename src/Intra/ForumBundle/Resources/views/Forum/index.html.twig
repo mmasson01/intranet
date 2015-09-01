@@ -1,0 +1,28 @@
+{% extends "IntraForumBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+	<h4>Liste des catégories</h4>
+
+	<div class="list-group">
+
+	{% if categories is defined %}
+		{% for categorie in categories %}
+			{% if categorie.getSurCategorie is null %}
+				<a href="{{ path('intra_forum_voir_categorie', {'id' : categorie.getId()} ) }}" class="list-group-item">{{ categorie.getName() }}</a>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+
+	{% if sous_categories is defined %}
+		{% for categorie in sous_categories %}
+				<a href="{{ path('intra_forum_voir_categorie', {'id' : categorie.getId()} ) }}" class="list-group-item">{{ categorie.getName() }}</a>
+		{% endfor %}
+	{% endif %}
+
+	</div>
+
+{% endblock %}

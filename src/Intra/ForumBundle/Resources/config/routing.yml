@@ -1,0 +1,47 @@
+intra_forum:
+    pattern:  /
+    defaults: { _controller: IntraForumBundle:Forum:index }
+
+intra_forum_ajouter_categorie:
+    pattern:  /ajouter_categorie
+    defaults: { _controller: IntraForumBundle:Forum:ajouterCategorie }
+
+intra_forum_voir_categorie:
+    pattern:  /categorie
+    defaults: { _controller: IntraForumBundle:Forum:voir }
+
+intra_forum_remove_categorie:
+    pattern:  /remove_categorie
+    defaults: { _controller: IntraForumBundle:Forum:removeCategorie }
+
+intra_forum_formulaire_thread:
+    pattern:  /ajouter
+    defaults: { _controller: IntraForumBundle:Forum:formulaireThread }
+
+intra_forum_ajouter_thread:
+    pattern:  /ajouter_thread
+    defaults: { _controller: IntraForumBundle:Forum:ajouterThread }
+
+intra_forum_voir_thread:
+    pattern:  /thread
+    defaults: { _controller: IntraForumBundle:Forum:voirThread }
+
+intra_forum_remove_thread:
+    pattern:  /remove_thread
+    defaults: { _controller: IntraForumBundle:Forum:removeThread }
+
+intra_forum_ajouter_commentaire:
+    pattern:  /ajouter_commentaire
+    defaults: { _controller: IntraForumBundle:Forum:ajouterCommentaire }
+
+intra_forum_ajouter_commentaire_commentaire:
+    pattern:  /ajouter_commentaire_commentaire
+    defaults: { _controller: IntraForumBundle:Forum:ajouterCommentaireCommentaire }
+
+intra_forum_remove_commentaire:
+    pattern:  /remove_commentaire
+    defaults: { _controller: IntraForumBundle:Forum:removeCommentaire }
+
+intra_forum_modify_categorie:
+    pattern:  /modify_categorie
+    defaults: { _controller: IntraForumBundle:Forum:modifyCategorie }

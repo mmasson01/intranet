@@ -1,0 +1,35 @@
+{% extends "::layout.html.twig" %}
+
+{% block title %}
+	{% if categorie is defined %}
+		{{ categorie.getName() }} - 
+	{% endif %}
+   Forum - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+  <h2>Forum</h2>
+  
+  <ol class="breadcrumb">
+	  <li><a href="{{ path('intra_forum') }}">Categories</a></li>
+	  	{% if categorie is defined %}
+		  	{% if categorie.getSurCategorie() %}
+		  		<li><a href="{{ path('intra_forum_voir_categorie', {'id' : categorie.getSurCategorie().getId()}) }}">{{ categorie.getSurCategorie().getName() }}</a></li>
+		  	{% endif %}
+
+		  	{% if thread is defined %}
+		  		<li><a href="{{ path('intra_forum_voir_categorie', {'id' : categorie.getId()}) }}">{{ categorie.getName() }}</a></li>
+		  		<li class="active">{{ thread.getSujet()|length > 25 ? thread.getSujet()|slice(0, 25) ~ '...' : thread.getSujet() }}</li>
+		 	{% else %}
+		 		<li class="active">{{ categorie.getName() }}</li>
+		 	{% endif %}
+	 	{% endif %}
+  </ol>
+
+  <hr>
+
+  {% block intramain_body %}
+  {% endblock %}
+
+{% endblock %}

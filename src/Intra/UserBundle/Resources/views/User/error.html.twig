@@ -1,0 +1,17 @@
+{% extends "IntraUserBundle::layout.html.twig" %}
+
+{% block title %}
+  Erreur - Profile - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+  <h1>Erreur</h1>
+  
+  <hr>
+
+  {% block intramain_body %}
+  <h3>L'utilisateur "{{ login }}" est introuvable</h3>
+  {% endblock %}
+
+{% endblock %}

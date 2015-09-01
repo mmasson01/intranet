@@ -1,0 +1,3 @@
+intra_main_homepage:
+    pattern:  /accueil
+    defaults: { _controller: IntraMainBundle:Main:index }

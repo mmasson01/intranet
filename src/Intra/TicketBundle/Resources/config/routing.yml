@@ -1,0 +1,31 @@
+intra_ticket_view:
+    pattern:  /
+    defaults: { _controller: IntraTicketBundle:Ticket:view }
+
+intra_ticket_create:
+    pattern:  /creer
+    defaults: { _controller: IntraTicketBundle:Ticket:create }
+
+intra_ticket_add:
+    pattern:  /ajouter
+    defaults: { _controller: IntraTicketBundle:Ticket:ajouter }
+
+intra_ticket_read:
+    pattern:  /read
+    defaults: { _controller: IntraTicketBundle:Ticket:read }
+
+intra_ticket_reply:
+    pattern:  /reply
+    defaults: { _controller: IntraTicketBundle:Ticket:reply }
+
+intra_ticket_changestate:
+    pattern:  /changestate
+    defaults: { _controller: IntraTicketBundle:Ticket:changeState }
+
+intra_ticket_remove:
+    pattern:  /remove
+    defaults: { _controller: IntraTicketBundle:Ticket:remove }
+
+intra_ticket_changeadmin:
+    pattern:  /changeadmin
+    defaults: { _controller: IntraTicketBundle:Ticket:changeAdmin }

@@ -1,0 +1,10 @@
+parameters:
+#    intra_annuaire.example.class: Intra\AnnuaireBundle\Example
+
+services:
+#    intra_annuaire.example:
+#        class: %intra_annuaire.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    intra.ldap.ldap_manager:
+        class:     Intra\AnnuaireBundle\Ldap\LdapManager
+        arguments: [@fr3d_ldap.ldap_driver, @fr3d_ldap.user_manager, %fr3d_ldap.ldap_manager.parameters%]

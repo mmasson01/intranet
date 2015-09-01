@@ -1,0 +1,80 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+{{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+{% if activite is defined %}
+
+{% if error is defined %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<div class="panel panel-success">
+	<div class="panel-heading">
+		{{ activite.getName() }}
+		- <small>{{ activite.getType() }}</small>
+		{% if activite.getDateDebutActivite()|date('d-m-Y') < "now"|date('d-m-Y') %}
+		{% if activite.getDateFinActivite()|date('d-m-Y') < "now"|date('d-m-Y') %}
+		<span class="label label-danger">Terminé</span>
+		{% else %}
+		<span class="label label-success">En cours</span>
+		{% endif %}
+		{% endif %}
+	</div>
+	<div class="panel-body">
+		<p> {{ activite.description }}</p>
+		<p><strong>Début:</strong> {{ activite.getDateDebutActivite()|date('d-m-Y') }}</p>
+		<p><strong>Fin:</strong> {{ activite.getDateFinActivite()|date('d-m-Y') }}</p>
+		<p>Ce projet est à réaliser par groupe de <strong>{{ activite.getTailleGroupe() }}</strong> étudiants.</p>
+		<small>Inscription du {{ activite.getDateDebutInscription()|date('d-m-Y') }} au {{ activite.getDateFinInscription()|date('d-m-Y') }}</small><br>
+		<small>{{ activite.getNbPlaces() }} places disponible - <a href="{{ path('intra_module_inscrit_activite', {'id' : activite.getId() } )}}">Voir les inscrits</a></small>
+		<hr>
+		{% if activite.getNbPlaces() == activite.getInscrit().count() %}
+		<p>Il n'y a plus de places disponibles</p>
+		{% elseif not module.getInscrit().contains(app.user) %}
+		<p>Inscrivez vous au module pour vous inscrire à l'activité</p>
+		{% elseif activite.getInscrit().contains(app.user) %}
+		<span class="glyphicon glyphicon-minus"></span><a href="{{ path('intra_module_desinscription_activite', {'id' : activite.getId()}) }}"> Se desinscrire</a>
+		{% elseif activite.getDateDebutInscription()|date("m/d/Y") <= "now"|date("m/d/Y") 
+		and activite.getDateFinInscription()|date("m/d/Y") >= "now"|date("m/d/Y") %}
+		<span class="glyphicon glyphicon-plus"></span><a href="{{ path('intra_module_inscription_activite', {'id' : activite.getId()}) }}"> S'inscrire</a>
+		{% else %}
+		<p>Vous n'etes pas le délai d'inscription</p>  	
+		{% endif %}
+	</div>
+</div>
+
+{% if activite.getInscrit().contains(app.user) %}
+{% if corrections_user is defined %}
+<ul>
+	{% for correction in corrections_user %}
+	{% if correction.getEnregistree() %}
+	<li>Vous avez mit {{ correction.getNote() }} à <a href="#">{{ correction.getCorrige().getUsername() }}</a></li>
+	{% else %}
+	<li>Vous devez <a href="{{ path('intra_correction_faire', {'id' : correction.getId()}) }}">corriger</a> <a href="#">{{ correction.getCorrige().getUsername() }}</a></li>
+	{% endif %}
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if corrections_to_user is defined %}
+<hr>
+<ul>
+	{% for correction in corrections_to_user %}
+	{% if correction.getEnregistree() %}
+	<li><a href="#">{{ correction.getCorrecteur().getUsername() }}</a> vous à mit {{ correction.getNote() }}</li>
+	{% else %}
+	<li><a href="#">{{ correction.getCorrecteur().getUsername() }}</a> doit vous corriger</li>
+	{% endif %}
+
+	{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

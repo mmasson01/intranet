@@ -1,0 +1,66 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	{% if module is defined %}
+
+		{% if error is defined %}
+				<div class="alert alert-danger">{{ error }}</div>
+		{% endif %}
+
+		<div class="panel panel-primary">
+		  <div class="panel-heading">{{ module.getName() }}</div>
+		  <div class="panel-body">
+		  	<p>{{ module.description }}</p>
+		  	<p><strong>Début:</strong> {{ module.getDateDebutModule()|date('d-m-Y') }}</p>
+				      	<p><strong>Fin:</strong> {{ module.getDateFinModule()|date('d-m-Y') }}</p>
+				      	<small>Inscription du {{ module.getDateDebutInscription()|date('d-m-Y') }} au {{ module.getDateFinInscription()|date('d-m-Y') }}</small><br>
+				      	<small>{{ module.getNbPlaces() }} places disponible - <a href="{{ path('intra_module_inscrit_module', {'id' : module.getId() } )}}">Voir les inscrits</a></small>
+				      	
+				      	<hr>
+			{% if module.getNbPlaces() == module.getInscrit().count() %}
+		    	<p>Il n'y a plus de places disponibles</p> 
+		  	{% elseif module.getInscrit().contains(app.user) %}
+		   		<span class="glyphicon glyphicon-minus"></span><a href="{{ path('intra_module_desinscription_module', {'id' : module.getId()}) }}"> Se desinscrire</a>
+		    {% elseif module.getDateDebutInscription()|date("m/d/Y") <= "now"|date("m/d/Y") 
+		    and module.getDateFinInscription()|date("m/d/Y") >= "now"|date("m/d/Y")%}
+		    	<span class="glyphicon glyphicon-plus"></span><a href="{{ path('intra_module_inscription_module', {'id' : module.getId()}) }}"> S'inscrire</a> 
+		    {% else %}
+		    	<p>Vous n'etes pas dans le délai d'inscription</p>  	
+		    {% endif %}
+		  </div>
+		</div>
+
+		<h4>Liste des activités du module {{ module.getName() }}</h4>
+
+		<div class="list-group">
+		
+			{% for activite in module.getActivites() %}
+					<a href="{{ path('intra_module_voir_activite', {'id' : activite.getId()}) }}" class="list-group-item">{{ activite.getName() }}
+					{% if activite.getInscrit().contains(app.user) %}
+						<span class="badge pull-right">inscrit</span>
+					{% endif %}
+					<small>{{ activite.getType() }}</small>
+					{% if activite.getDateDebutActivite()|date('d-m-Y') < "now"|date('d-m-Y') %}
+						{% if activite.getDateFinActivite()|date('d-m-Y') < "now"|date('d-m-Y') %}
+							<span class="label label-danger">Terminé</span>
+						{% else %}
+							<span class="label label-success">En cours</span>
+						{% endif %}
+					{% endif %}
+					</a>
+			{% endfor %}	
+
+		</div>
+
+		{% if module.getActivites() is empty %}
+				<p>Aucune activité est encore définit pour ce module</p>
+		{% endif %}
+
+	{% endif %}
+
+{% endblock %}

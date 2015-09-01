@@ -1,0 +1,398 @@
+{% extends "IntraAdminBundle::layout.html.twig" %}
+
+{% block title %}
+{{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+<ul class="nav nav-tabs" id="adminTab">
+	<li class="active"><a href="#tickets" data-toggle="tab">Tickets</a></li>
+	<li><a href="#users" data-toggle="tab">Utilisateurs</a></li>
+	<li><a href="#categories" data-toggle="tab">Categories</a></li>
+	<li><a href="#modules" data-toggle="tab">Modules</a></li>
+</ul>
+
+<div class="tab-content">
+
+	<div class="tab-pane active" id="tickets">
+		<h4>Tickets non attribué</h4>
+
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<tr><th>Titre</th><th>Priorité</th><th>Date de soumission</th><th>Auteur</th></tr>
+
+				{% for ticket in tickets %}
+				{% if ticket.getAdmin() is null %}
+
+				{% if ticket.getEtat() == "En cours" %}
+				<tr class="info">
+					{% else %}
+					<tr class="warning">
+						{% endif %}
+						<td><a href="{{ path('intra_ticket_read', {'id' : ticket.getId()} ) }}">{{ ticket.getTitre()|length > 25 ? ticket.getTitre()|slice(0, 25) ~ '...' : ticket.getTitre() }}</a></td>
+						<td>{{ ticket.getPriorite() }}</td>
+						<td>{{ ticket.getDatetime()|date('Y-m-d h:m') }}</td>
+						<td>{{ ticket.getAuteur() }}</td>
+					</tr>
+
+					{% endif %}
+					{% endfor %}
+
+				</table>
+			</div>
+
+
+			<h4>Tickets</h4>
+			<a href="{{ path('intra_admin_tickets') }}">Voir tout les tickets</a>
+
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<tr><th>Titre</th><th>Priorité</th><th>Date de soumission</th><th>Auteur</th></tr>
+
+					{% for ticket in tickets %}
+					{% if ticket.getAdmin() is not null %}
+					{% if ticket.getAdmin().getId() == app.user.getId() %}
+
+					{% if ticket.getEtat() == "En cours" %}
+					<tr class="info">
+						{% else %}
+						<tr class="warning">
+							{% endif %}
+							<td><a href="{{ path('intra_ticket_read', {'id' : ticket.getId()} ) }}">{{ ticket.getTitre()|length > 25 ? ticket.getTitre()|slice(0, 25) ~ '...' : ticket.getTitre() }}</a></td>
+							<td>{{ ticket.getPriorite() }}</td>
+							<td>{{ ticket.getDatetime()|date('Y-m-d h:m') }}</td>
+							<td>{{ ticket.getAuteur() }}</td>
+						</tr>
+
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+
+					</table>
+				</div>
+
+				{% if tickets is empty %}
+				<p>Aucun ticket en attente</p>
+				{% endif %}
+
+			</div>
+
+			<div class="tab-pane" id="users">
+				<h4>Liste des utilisateurs</h4>
+
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<tr><th>Login</th><th>Email</th><th>Roles</th><th>Etat</th></tr>
+
+						{% for user in users %}
+
+						<tr>
+							<td>{{ user.getUsername() }}</td>
+							<td>{{ user.getEmail() }}</td>
+							<td>{% for role in user.getRoles() %}
+								{{ role }}
+								{% endfor %}
+							</td>
+							<td>
+								{% if ((user.hasRole('ROLE_ADMIN') and is_granted('ROLE_SUPER_ADMIN')) or not(user.hasRole('ROLE_ADMIN')) ) %}
+								{% if user.isEnabled()%}
+								<form action="{{ path('user_update') }}" method="POST">
+									<input type="hidden" id="_id" name ="_id" value="{{ user.getId() }}">
+									<button type="submit" class="btn btn-default btn-xs">Actif</button>
+								</form>
+								{% else %}
+								<form action="{{ path('user_update') }}" method="POST">
+									<input type="hidden" id="_id" name ="_id" value="{{ user.getId() }}">
+									<button type="submit" class="btn btn-default btn-xs">Inactif</button>
+								</form>
+								{% endif %}
+								{% else %}
+								{% if user.isEnabled()%}
+								Actif
+								{% else %}
+								Inactif
+								{% endif %}
+								{% endif %}
+							</td>
+						</tr>
+
+						{% endfor %}
+
+					</table>
+				</div>
+
+				{% if tickets is empty %}
+				<p>Aucun utilisateur</p>
+				{% endif %}
+
+			</div>
+
+			<div class="tab-pane" id="categories">
+				<h4>Liste des categories du Forum</h4>
+
+				<div class="panel-group" id="accordion_categories">
+
+					{% for categorie in categories %}
+					{% if categorie.getSurCategorie is null %}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion_categories" href="#categorie_{{ categorie.getId() }}">
+									{{ categorie.getName() }}				          
+								</a>
+								{% if categorie.getModule() is empty %}
+									<form class="pull-right" action="{{ path('intra_forum_remove_categorie') }}" method="POST">
+										<input type="hidden" id="_id" name ="_id" value="{{ categorie.getId() }}">
+										<button type="submit" class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
+									</form>
+									<button type="submit" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#Formulaire_modifier_categorie" 
+									onclick="
+									document.getElementById('_modification_id').value = '{{ categorie.getId() }}';
+									document.getElementById('_modification_name').value = '{{ categorie.getName() }}'
+									">
+									<span class="glyphicon glyphicon-edit"></span>
+									</button>
+								{% endif %}
+						</h4>
+					</div>
+					<div id="categorie_{{ categorie.getId() }}" class="panel-collapse collapse">
+						<div class="panel-body">
+							{% if categorie.getSousCategories() is not empty %}
+							<ul class="list-group">
+								{% for categorie in categorie.getSousCategories() %}
+
+								<li class="list-group-item">{{ categorie.getName() }}
+									{% if categorie.getModule() is empty %}
+										<form class="pull-right" action="{{ path('intra_forum_remove_categorie') }}" method="POST">
+											<input type="hidden" id="_id" name ="_id" value="{{ categorie.getId() }}">
+											<button type="submit" class="btn btn-default btn-xs">
+												<span class="glyphicon glyphicon-remove"></span>
+											</button>
+										</form>
+										<button type="submit" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#Formulaire_modifier_categorie" 
+										onclick="
+										document.getElementById('_modification_id').value = '{{ categorie.getId() }}';
+										document.getElementById('_modification_name').value = '{{ categorie.getName() }}'
+										">
+										<span class="glyphicon glyphicon-edit"></span>
+										</button>
+									{% endif %}
+							</li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+						<form action="{{ path('intra_forum_ajouter_categorie') }}" method="POST" onsubmit="return (this._name.value.length > 0)">
+							<div class="form-group">
+								<label for="name">Ajouter une sous-catégorie</label>
+								<input type="hidden" name="_sur_categorie_id" value="{{ categorie.GetId() }}">
+								<input type="text" class="form-control" id="_name" name="_name" placeholder="Nom de la catégorie">
+							</div>
+							<button type="submit" class="btn btn-default">Ajouter</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+			{% endfor %}
+
+		</div>
+
+		{% if categories is empty %}
+		<p>Aucune categorie</p>
+		{% endif %}
+
+		<form action="{{ path('intra_forum_ajouter_categorie') }}" method="POST" onsubmit="return (this._name.value.length > 0)">
+			<div class="form-group">
+				<label for="name">Ajouter une catégorie</label>
+				<input type="hidden" id="_sur_categorie_id" name ="_sur_categorie_id" value="0">
+				<input type="text" class="form-control" id="_name" name="_name" placeholder="Nom de la catégorie">
+			</div>
+			<button type="submit" class="btn btn-default">Ajouter</button>
+		</form>
+
+		<div class="modal fade" id="Formulaire_modifier_categorie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">Modifier le nom de la catégorie</h4>
+					</div>
+					<div class="modal-body">
+						<form action="{{ path('intra_forum_modify_categorie') }}" method="POST" id="_formulaire_categorie" onsubmit="return (this._modification_name.value.length > 0)">
+							<div class="form-group">
+								<label for="name">Catégorie</label>
+								<input type="hidden" id="_modification_id" name ="_modification_id" value="0">
+								<input type="text" class="form-control" id="_modification_name" name="_modification_name" placeholder="Nom de la catégorie">
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+							<button type="button submit" class="btn btn-primary">Modifier</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="tab-pane" id="modules">
+		<h4>Liste des modules</h4>
+
+		<div class="panel-group" id="accordion_modules">
+
+			{% for module in modules %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion_modules" href="#module_{{ module.getId() }}">
+							{{ module.getName() }}
+						</a>
+						<form class="pull-right" action="{{ path('intra_module_remove_module') }}" method="POST">
+							<input type="hidden" id="_id" name ="_id" value="{{ module.getId() }}">
+							<button type="submit" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</form>
+						<form class="pull-right" action="{{ path('intra_module_formulaire_modification_module') }}" method="POST">
+								<input type="hidden" id="_id" name ="_id" value="{{ module.getId() }}">
+								<button type="submit" class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-edit"></span>
+								</button>
+						</form>
+						<span class="badge">{{ module.getValeure() }} crédits</span>
+					</h4>
+				</div>
+				<div id="module_{{ module.getId() }}" class="panel-collapse collapse">
+					<div class="panel-body">
+						<p>{{ module.description }}</p>
+						<p><strong>Début:</strong> {{ module.getDateDebutModule()|date('d-m-Y') }}</p>
+						<p><strong>Fin:</strong> {{ module.getDateFinModule()|date('d-m-Y') }}</p>
+						<small>Inscription du {{ module.getDateDebutInscription()|date('d-m-Y') }} au {{ module.getDateFinInscription()|date('d-m-Y') }}</small>
+						<br>
+						{{ module.getNbPlaces() }} places - <a href="{{ path('intra_module_inscrit_module', {'id' : module.getId() } )}}">Voir les inscrits</a>
+						<hr>
+						{% if module.getActivites() is not empty %}
+						<h4>Activités</h4>
+						<div class="panel-group" id="accordion_activites">
+						{% for activite in module.getActivites() %}	
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordion_activites" href="#activite_{{ activite.getId() }}">{{ activite.getName() }} <small>{{ activite.getType() }}</small></a>
+										{% if activite.getDateDebutActivite()|date('d-m-Y') < "now"|date('d-m-Y') %}
+											{% if activite.getDateFinActivite()|date('d-m-Y') < "now"|date('d-m-Y') %}
+												<span class="label label-danger">Terminé</span>
+											{% else %}
+												<span class="label label-success">En cours</span>
+											{% endif %}
+										{% endif %}
+										<form class="pull-right" action="{{ path('intra_module_remove_activite') }}" method="POST">
+											<input type="hidden" id="_id" name ="_id" value="{{ activite.getId() }}">
+											<button type="submit" class="btn btn-default btn-xs">
+												<span class="glyphicon glyphicon-remove"></span>
+											</button>
+										</form>
+										<form class="pull-right" action="{{ path('intra_module_formulaire_modification_activite') }}" method="POST">
+											<input type="hidden" id="_id" name ="_id" value="{{ activite.getId() }}">
+											<button type="submit" class="btn btn-default btn-xs">
+												<span class="glyphicon glyphicon-edit"></span>
+											</button>
+										</form>
+									</h4>
+								</div>
+								<div id="activite_{{ activite.getId() }}" class="panel-collapse collapse">
+									<div class="panel-body">
+										<p>{{ activite.description }}</p>
+										<p>Groupe de <strong>{{ activite.getTailleGroupe() }}</strong></p>
+										<p>Peers: <strong>{{ activite.getNbPeers() }}</strong></p> 
+										<p><strong>Début:</strong> {{ activite.getDateDebutActivite()|date('d-m-Y') }}</p>
+										<p><strong>Fin:</strong> {{ activite.getDateFinActivite()|date('d-m-Y') }}</p>
+										<small>Inscription du {{ activite.getDateDebutInscription()|date('d-m-Y') }} au {{ activite.getDateFinInscription()|date('d-m-Y') }}</small>
+										<br>
+										{{ activite.getNbPlaces() }} places - <a href="{{ path('intra_module_inscrit_activite', {'id' : activite.getId() } )}}">Voir les inscrits</a>
+										<hr>
+										{% if activite.bareme is null %}
+										<button type="submit" class="btn btn-default">
+											<a href="{{ path('intra_module_ajouter_bareme', {'id' : activite.getId() }) }}">Ajouter un barème</a>
+										</button>
+										{% else %}
+										<button type="submit" class="btn btn-default">
+											<a href="{{ path('intra_module_show_bareme', {'activiteid' : activite.getId(), 'baremeid' : activite.bareme.getId() }) }}">Voir le barème</a>
+										</button>
+										<button type="submit" class="btn btn-default">
+											<a href="{{ path('intra_module_modifier_bareme', {'activiteid' : activite.getId(), 'baremeid' : activite.bareme.getId() }) }}">Modifier le barème</a>
+										</button>
+										<button type="submit" class="btn btn-default">
+											<a href="{{ path('intra_module_remove_bareme', {'activiteid' : activite.getId(), 'baremeid' : activite.bareme.getId() }) }}">Supprimer le barème</a>
+										</button>
+										{% endif %}
+
+										{% if activite.getDateFinActivite()|date('d-m-Y') < "now"|date('d-m-Y') and activite.getType() == "Projet" %}
+											{% if activite.bareme is null %}
+												<p>Créez un barème pour pouvoir génerer les peers</p>
+											{% else %}
+											<form method="POST" action="{{ path('intra_correction_generation') }}">
+											<input type="hidden" id="_id_activite" name="_id_activite" value="{{ activite.getId() }}">
+											<button type="submit" class="btn btn-success">Génerer les peers</button>
+											</form>
+											{% endif %}
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+						</div>
+						{% else %}
+						<p>Aucune activité pour ce module</p>
+						{% endif %}
+						<button type="submit" class="btn btn-default">
+							<a href="{{ path('intra_module_formulaire_activite', {'id' : module.getId() }) }}">Ajouter une activite</a>
+						</button>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+
+		</div>
+
+		{% if modules is empty %}
+		<p>Aucun module</p>
+		{% endif %}
+
+		<button class="btn btn-default"><a href="{{ path('intra_module_formulaire_module') }}">Ajouter un module</a></button>
+
+	</div>
+
+</div>
+
+
+{% if page is defined %}
+
+{% if page == "categorie" %}
+<script type="text/javascript">
+window.onload = function() {
+	$('#adminTab a[href="#categories"]').tab('show')
+}
+</script>
+{% elseif page == "utilisateur" %}
+<script type="text/javascript">
+window.onload = function() {
+	$('#adminTab a[href="#users"]').tab('show')
+}
+</script>
+{% elseif page == "modules" %}
+<script type="text/javascript">
+window.onload = function() {
+	$('#adminTab a[href="#modules"]').tab('show')
+}
+</script>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

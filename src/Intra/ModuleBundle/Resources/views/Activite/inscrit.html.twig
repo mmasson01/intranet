@@ -1,0 +1,28 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	{% if activite is defined %}
+		<h4>Il y a {{ activite.getInscrit().count() }} inscrit à l'activite {{ activite.getName() }}</h4>
+
+		<ul>
+
+		{% for inscrit in activite.getInscrit() %}
+				<li>{{ inscrit.getUsername() }}
+				</li>
+		{% endfor %}
+
+		</ul>
+
+		{% if activite.getInscrit() is empty %}
+			<p>Encore aucun inscrit à cette activite</p>
+		{% endif %}
+
+	{% endif %}
+
+
+{% endblock %}

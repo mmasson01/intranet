@@ -1,0 +1,15 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  Modifier un bareme - {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+<h4>Modifier un bareme</h4>
+
+{% include 'IntraModuleBundle:Formulaire:bareme.html.twig' 
+     with {'activiteid' : activite.id, 'baremeid' : bareme.id,} %}
+
+
+{% endblock %}

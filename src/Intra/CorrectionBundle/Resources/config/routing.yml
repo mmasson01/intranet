@@ -1,0 +1,11 @@
+intra_correction_generation:
+    pattern:  /generation
+    defaults: { _controller: IntraCorrectionBundle:Correction:generationPeers }
+
+intra_correction_faire:
+    pattern:  /correction
+    defaults: { _controller: IntraCorrectionBundle:Correction:faireCorrection }
+
+intra_correction_enregistrer:
+    pattern:  /enregistrement
+    defaults: { _controller: IntraCorrectionBundle:Correction:enregistrer }

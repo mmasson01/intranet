@@ -1,0 +1,7 @@
+intra_annuaire:
+    pattern:  /
+    defaults: { _controller: IntraAnnuaireBundle:Annuaire:index }
+
+intra_annuaire_search:
+    pattern:  /{letter}
+    defaults: { _controller: IntraAnnuaireBundle:Annuaire:search }

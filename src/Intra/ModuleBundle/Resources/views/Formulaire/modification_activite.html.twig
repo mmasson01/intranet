@@ -1,0 +1,83 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  Ajouter une activité - {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	{% if activite is defined %}
+		<h4>Modification de l'activité {{ activite.getName() }}</h4>
+
+		<form action="{{ path('intra_module_modifier_activite') }}" method="POST" onsubmit="
+		return (this._name.value.length > 0 
+		&& this._description.value.length > 0)
+		&& this._taille_groupe.value > 0
+		&& this._nb_peers.value > 0
+		&& this._date_debut_activite.value != 0
+		&& this._date_debut_activite.value <= this._date_debut_inscription.value
+		&& this._date_debut_activite.value < this._date_fin_activite.value
+		&& this._date_debut_inscription.value < this._date_fin_inscription.value">
+
+			<div class="form-group">
+			    <label for="_name">Nom</label>
+			    <input type="text" class="form-control" id="_name" name="_name" value="{{ activite.getName() }}">
+			</div>
+			<div class="form-group">
+			  	<label for="_description">Description</label>
+			  	<textarea class="form-control" rows="6" id="_description" name="_description" placeholder="Description détaillé de l'activité">{{ activite.getDescription() }}</textarea>
+			</div>
+			<div class="form-group">
+			  	<label for="_taille_groupe">Taille des groupes</label>
+			  	<input type="number" class="form-control" id="_taille_groupe" name="_taille_groupe" value="{{ activite.getTailleGroupe() }}">
+			</div>
+			<div class="form-group">
+			  	<label for="_nb_peers">Nombre de peers</label>
+			  	<input type="number" class="form-control" id="_nb_peers" name="_nb_peers" value="{{ activite.getNbPeers() }}">
+			</div>
+			<div class="form-group">
+		  		<label for="_valeure">Restriction de places</label>
+			  	<input type="number" class="form-control" id="_restriction" name="_restriction" value="{{ activite.getNbPlaces() }}">
+			</div>
+			<div class="form-group">
+			  	<label for="_type">Type</label>
+			  	<select type="number" class="form-control" id="_type" name="_type">
+				  	<option {% if activite.getType() == "Projet" %} selected="true"{% endif %}>Projet</option>
+				  	<option {% if activite.getType() == "Examen" %} selected="true"{% endif %}>Examen</option>
+				  	<option {% if activite.getType() == "TD" %} selected="true"{% endif %}>TD</option>
+			  	</select>
+			</div>
+			<div class="form-group col-xs-6">
+		  	<label for="_date_debut_activite">Début de l'activité</label>
+			  	<input type="date" class="form-control" id="_date_debut_activite" name="_date_debut_activite"
+			  	value="{{ activite.getDateDebutActivite()|date('Y-m-d') }}"
+			  	onchange="
+			  	if (document.getElementById('_date_fin_activite').value == 0 
+			  		|| document.getElementById('_date_fin_activite').value < this.value)
+			  		document.getElementById('_date_fin_activite').value = this.value;
+			  	if (document.getElementById('_date_debut_inscription').value == 0 
+			  		|| document.getElementById('_date_debut_inscription').value < this.value)
+			  		document.getElementById('_date_debut_inscription').value = this.value;
+			  	if (document.getElementById('_date_fin_inscription').value == 0 
+			  		|| document.getElementById('_date_fin_inscription').value < this.value)
+			  		document.getElementById('_date_fin_inscription').value = this.value;
+			  	">
+			</div>
+			<div class="form-group col-xs-6">
+				<label for="_date_fin_activite">Fin de l'activité</label>
+				  	<input type="date" class="form-control" id="_date_fin_activite" name="_date_fin_activite" value="{{ activite.getDateFinActivite()|date('Y-m-d') }}">
+			</div>
+			<div class="form-group col-xs-6">
+			  	<label for="_date_debut_inscription">Début d'inscription</label>
+				  	<input type="date" class="form-control" id="_date_debut_inscription" name="_date_debut_inscription" value="{{ activite.getDateDebutInscription()|date('Y-m-d') }}">
+			</div>
+			<div class="form-group col-xs-6">
+				<label for="_date_fin_inscription">Fin d'inscription</label>
+				  	<input type="date" class="form-control" id="_date_fin_inscription" name="_date_fin_inscription" value="{{ activite.getDateFinActivite()|date('Y-m-d') }}">
+			</div>
+			<input type="hidden" name="_id_activite" value="{{ activite.getId() }}">
+			<button type="submit" class="btn btn-default">Sauvegarder les modifications</button>
+		</form>
+	{% endif %}
+
+{% endblock %}

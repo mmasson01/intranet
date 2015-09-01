@@ -1,0 +1,66 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  Modifier un module - {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	<form action="{{ path('intra_module_modifier_module') }}" method="POST" onsubmit="
+	return (this._name.value.length > 0 
+	&& this._description.value.length > 0)
+	&& this._valeure.value > 0
+	&& this._date_debut_module.value != 0
+	&& this._date_debut_module.value <= this._date_debut_inscription.value
+	&& this._date_debut_module.value < this._date_fin_module.value
+	&& this._date_debut_inscription.value < this._date_fin_inscription.value">
+
+		<div class="form-group">
+		    <label for="_name">Nom</label>
+		    <input type="text" class="form-control" id="_name" name="_name" placeholder="Nom du module" value="{{ module.getName() }}">
+		</div>
+		<div class="form-group">
+		  	<label for="_description">Description</label>
+		  	<textarea class="form-control" rows="6" id="_description" name="_description">{{ module.getDescription()|nl2br }}</textarea>
+		</div>
+		<div class="form-group">
+		  	<label for="_valeure">Valeure en crédits</label>
+		  	<input type="number" class="form-control" id="_valeure" name="_valeure" value="{{ module.getValeure() }}">
+		</div>
+		<div class="form-group">
+		  	<label for="_valeure">Restriction de places</label>
+		  	<input type="number" class="form-control" id="_restriction" name="_restriction" value="{{ module.getNbPlaces() }}">
+		</div>
+		<div class="form-group col-xs-6">
+		  	<label for="_date_debut_module">Début du Module</label>
+			  	<input type="date" class="form-control" id="_date_debut_module" value="{{ module.getDateDebutModule()|date('Y-m-d') }}"
+			  	name="_date_debut_module" 
+			  	onchange="
+			  	if (document.getElementById('_date_fin_module').value == 0 
+			  		|| document.getElementById('_date_fin_module').value < this.value)
+			  		document.getElementById('_date_fin_module').value = this.value;
+			  	if (document.getElementById('_date_debut_inscription').value == 0 
+			  		|| document.getElementById('_date_debut_inscription').value < this.value)
+			  		document.getElementById('_date_debut_inscription').value = this.value;
+			  	if (document.getElementById('_date_fin_inscription').value == 0 
+			  		|| document.getElementById('_date_fin_inscription').value < this.value)
+			  		document.getElementById('_date_fin_inscription').value = this.value;
+			  	">
+		</div>
+		<div class="form-group col-xs-6">
+			<label for="_date_fin_module">Fin du Module</label>
+			  	<input type="date" class="form-control" id="_date_fin_module" name="_date_fin_module" value="{{ module.getDateFinModule()|date('Y-m-d') }}">
+		</div>
+		<div class="form-group col-xs-6">
+		  	<label for="_date_debut_inscription">Début d'inscription</label>
+			  	<input type="date" class="form-control" id="_date_debut_inscription" name="_date_debut_inscription" value="{{ module.getDateDebutInscription()|date('Y-m-d') }}">
+		</div>
+		<div class="form-group col-xs-6">
+			<label for="_date_fin_inscription">Fin d'inscription</label>
+			  	<input type="date" class="form-control" id="_date_fin_inscription" name="_date_fin_inscription" value="{{ module.getDateFinModule()|date('Y-m-d') }}">
+		</div>
+		<input type="hidden" name="_id_module" value="{{ module.getId() }}">
+		<button type="submit" class="btn btn-default">Sauvegarder les modifications</button>
+	</form>
+
+{% endblock %}

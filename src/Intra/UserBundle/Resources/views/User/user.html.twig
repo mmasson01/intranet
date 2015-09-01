@@ -1,0 +1,24 @@
+{% extends "IntraUserBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ cn }} - Profile - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+  <h1>{{ cn }}</h1>
+  
+  <hr>
+
+  {% block intramain_body %}
+  <div class="picture">
+    <img src="https://cdn.42.fr/userprofil/profilview/{{ login }}.jpg" alt="{{ cn }}">
+  </div>
+  <hr>
+  <div class="infos">
+    <p><span class="glyphicon glyphicon-user"></span> {{ login }} </p>
+    <span class="glyphicon glyphicon-pencil"><a href="mailto:{{ mail }}"></span> {{ mail }}</a>
+  </div>
+  {% endblock %}
+
+{% endblock %}

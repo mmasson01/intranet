@@ -1,0 +1,25 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	<h4>Liste des modules</h4>
+
+	<div class="list-group">
+
+	{% if modules is defined %}
+		{% for module in modules %}
+				<a href="{{ path('intra_module_voir_module', {'id' : module.getId()} ) }}" class="list-group-item">{{ module.getName() }}
+				{% if module.getInscrit().contains(app.user) %}
+				<span class="badge pull-right">inscrit</span>
+				{% endif %}
+				</a>
+		{% endfor %}
+	{% endif %}
+
+	</div>
+
+{% endblock %}

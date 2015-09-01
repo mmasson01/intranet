@@ -1,0 +1,28 @@
+{% extends "::layout.html.twig" %}
+
+{% block title %}
+   Modules - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+  <h2>Modules</h2>
+  
+  <ol class="breadcrumb">
+	  <li><a href="{{ path('intra_module') }}">Modules</a></li>
+	  	{% if module is defined %}
+        {% if activite is defined %}
+		  	  <li><a href="{{ path('intra_module_voir_module', {'id' : module.getid() }) }}">{{ module.getName() }}</a></li>
+          <li class="active"> {{ activite.getName() }}</li>
+        {% else %}
+          <li class="active">{{ module.getName() }}</li>
+        {% endif %}
+	 	{% endif %}
+  </ol>
+
+  <hr>
+
+  {% block intramain_body %}
+  {% endblock %}
+
+{% endblock %}

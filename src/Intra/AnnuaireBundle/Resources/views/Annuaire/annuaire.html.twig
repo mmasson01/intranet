@@ -1,0 +1,42 @@
+{% extends "IntraAnnuaireBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+{% for user in users %}
+
+  <div class="col-sm-6 col-md-2">
+  	<a href="{{ path('user_profile', {'login': user.getLogin()}) }}">
+    <div class="thumbnail">
+      <img src="https://cdn.42.fr/userprofil/profilview/{{ user.getLogin() }}.jpg" class="img-responsive img-thumbnail" alt="{{ user.getName() }}">
+      <div class="caption">
+        <p align="center">{{ user.getName() }}</p>
+      	<p align="center">{{ user.getLogin() }}</p>
+      </div>
+    </div>
+    </a>
+  </div>
+
+{% endfor %}
+
+{% if users2 is defined %}
+{% for user in users2 %}
+
+  <div class="col-sm-6 col-md-2">
+    <a href="{{ path('user_profile', {'login': user.getLogin()}) }}">
+    <div class="thumbnail">
+      <img src="https://cdn.42.fr/userprofil/profilview/{{ user.getLogin() }}.jpg" class="img-responsive img-thumbnail" alt="{{ user.getName() }}">
+      <div class="caption">
+        <p align="center">{{ user.getName() }}</p>
+        <p align="center">{{ user.getLogin() }}</p>
+      </div>
+    </div>
+    </a>
+  </div>
+
+{% endfor %}
+{% endif %}
+{% endblock %}

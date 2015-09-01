@@ -1,0 +1,28 @@
+{% extends "IntraModuleBundle::layout.html.twig" %}
+
+{% block title %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	{% if module is defined %}
+		<h4>Il y a {{ module.getInscrit().count() }} inscrit au module {{ module.getName() }}</h4>
+
+		<ul>
+
+		{% for inscrit in module.getInscrit() %}
+				<li>{{ inscrit.getUsername() }}
+				</li>
+		{% endfor %}
+
+		</ul>
+
+		{% if module.getInscrit() is empty %}
+			<p>Encore aucun inscrit à ce module</p>
+		{% endif %}
+
+	{% endif %}
+
+
+{% endblock %}

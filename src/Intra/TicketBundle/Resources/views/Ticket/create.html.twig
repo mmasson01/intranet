@@ -1,0 +1,30 @@
+{% extends "IntraTicketBundle::layout.html.twig" %}
+
+{% block title %}
+  Nouveau ticket - {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+	
+	<form role="form" action={{ path('intra_ticket_add') }} method="POST" 
+	onsubmit="return (this._titre.value.length > 0 && this._content.value.length > 0)">
+	  <div class="form-group">
+	    <label for="_titre">Titre</label>
+	    <input type="text" class="form-control" id="_titre" name="_titre" placeholder="Entrez votre titre">
+	  </div>
+	  <div class="form-group">
+	  	<label for="_content">Message</label>
+	  	<textarea class="form-control" rows="6" id="_content" name="_content"></textarea>
+	  </div>
+	  <div class="form-group">
+	  	<label for="priorite">Priorité</label>
+	    <select class="form-control" id="priorite" name="_priorite">
+		  <option>Normale</option>
+		  <option>Soutenue</option>
+		  <option>Elevée</option>
+		</select>
+	  </div>
+	  <button type="submit" class="btn btn-default">Soumettre</button>
+	</form>
+
+{% endblock %}

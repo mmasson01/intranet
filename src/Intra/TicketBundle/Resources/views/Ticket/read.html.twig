@@ -1,0 +1,110 @@
+{% extends "IntraTicketBundle::layout.html.twig" %}
+
+{% block title %}
+  {% if ticket is defined %}
+  	{{ ticket.getTitre() }} - 
+  {% endif %}
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+		  {% if ticket is defined %}
+
+		  	{% if ticket.getEtat() == "En attente" %}
+		  		<div class="panel panel-warning">
+		  	{% elseif ticket.getEtat() == "En cours" %}
+		  		<div class="panel panel-info">
+		  	{% elseif ticket.getEtat() == "Résolut" %}
+		  		<div class="panel panel-success">
+		  	{% elseif ticket.getEtat() == "Fermé" %}
+		  		<div class="panel panel-default">
+			{% endif %}
+			  <div class="panel-heading">
+			    <h3 class="panel-title">{{ ticket.getTitre() }}</h3>
+			  </div>
+			  <div class="panel-body">
+			    {{ ticket.getContenu()|nl2br }}
+			    <br/>
+			    <small>{{ ticket.getDatetime()|date('Y-m-d h:m') }}</small>
+			  </div>
+			  <div class="panel-footer">
+			  	{{ ticket.getPriorite() }} - {{ ticket.getEtat() }}
+			  	{% if ticket.getAdmin() is not null %} 
+			  		- Attribué: {{ ticket.getAdmin() }}
+			  	{%  endif %}
+			  </div>
+			</div>
+
+				<form role="form" action={{ path('intra_ticket_changestate') }} method="POST">
+				  <div class="form-group">
+				  	<label for="etat">Etat</label>
+				    <select class="form-control" id="etat" name="_etat" onchange="this.form.submit()">
+					  <option {% if ticket.getEtat() == "En attente" %} selected="true"{% endif %}>En attente</option>
+					  <option {% if ticket.getEtat() == "En cours" %} selected="true"{% endif %}>En cours</option>
+					  <option {% if ticket.getEtat() == "Résolut" %} selected="true"{% endif %}>Résolut</option>
+					  <option {% if ticket.getEtat() == "Fermé" %} selected="true"{% endif %}>Fermé</option>
+					</select>
+				  </div>
+				  <input type="hidden" name="_id" value="{{ ticket.getId() }}">
+				</form>
+
+			{% if is_granted('ROLE_ADMIN') %}
+
+			  {% if admins is defined %}
+
+				<form role="form" action={{ path('intra_ticket_changeadmin') }} method="POST">
+				  <div class="form-group">
+				  	<label for="admin">Attribuer à</label>
+				    <select class="form-control" id="admin" name="_admin_id" onchange="this.form.submit()">
+				    	<option value="0">Aucun</option>
+					  	{% for admin in admins %}
+							<option {% if ticket.getAdmin() == admin %} selected="true" {% endif %} value="{{ admin.getId() }}">
+								{{ admin.username }}
+							</option>
+					  	{% endfor %}
+					</select>
+				  </div>
+				  <input type="hidden" name="_id" value="{{ ticket.getId() }}">
+				</form>
+
+			  {% endif %}
+
+			{% endif %}
+
+			{% if replys is defined %}
+
+			{% for reply in replys %}
+
+				{% if reply.getAuteur() == ticket.getAuteur() %}
+		  			<div class="panel panel-default">
+		  		{% else %}
+		  			<div class="panel panel-info">
+				{% endif %}
+				  <div class="panel-heading">
+				    <strong>{{ reply.getAuteur() }}</strong> - <small>{{ reply.getDatetime()|date('Y-m-d h:m')}}</small>
+				  </div>
+				  <div class="panel-body">
+				    {{ reply.getContenu()|nl2br }}
+				  </div>
+				</div>
+
+			{% endfor %}
+
+			{% endif %}
+
+			<form role="form" action={{ path('intra_ticket_reply') }} method="POST" >
+			  <div class="form-group">
+			  	<label for="contenu">Message</label>
+			  	<textarea class="form-control" rows="6" id="contenu" name="_content"></textarea>
+			  </div>
+			  <input type="hidden" name="_id" value="{{ ticket.getId() }}">
+			  <button type="submit" class="btn btn-default">Repondre</button>
+			</form>
+
+		  {% endif %}
+
+  		</table>
+	</div>
+
+{% endblock %}

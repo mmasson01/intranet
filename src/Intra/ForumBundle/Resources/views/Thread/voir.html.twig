@@ -1,0 +1,95 @@
+{% extends "IntraForumBundle::layout.html.twig" %}
+
+{% block title %}
+  {% if thread is defined %}
+  	{{ thread.getSujet() }} - 
+  {% endif %}
+
+  {{ parent() }}
+{% endblock %}
+
+{% block intramain_body %}
+
+	{% if thread is defined %}
+
+		<div class="panel panel-info">
+		  <div class="panel-heading"><h4>{{ thread.getSujet() }}</h4></div>
+		  <div class="panel-body">
+		    {{ thread.getAuteur() }} - {{ thread.getDateActivite()|date('Y-m-d h:m') }}
+		  </div>
+		</div>
+
+		{% for commentaire in commentaires %}
+
+		<div class="list-group">
+			<div class="list-group-item">
+		    <p class="list-group-item-heading">{{ commentaire.getContenu()|nl2br }}
+
+		    {% if is_granted('ROLE_ADMIN') %}
+		    	<form class="pull-right" action="{{ path('intra_forum_remove_commentaire') }}" method="POST">
+					<input type="hidden" id="_id" name ="_id" value="{{ commentaire.getId() }}">
+					<input type="hidden" id="_id_thread" name ="_id_thread" value="{{ thread.getId() }}">
+					<button type="submit" class="btn btn-default btn-xs">
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</form>
+			{% endif %}
+
+		    </p>
+		    <small class="list-group-item-text">{{ commentaire.getAuteur() }} - {{ commentaire.getDateCreation()|date('Y-m-d h:m') }}
+		    </small>
+		    	<button class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{ commentaire.getId() }}"><span class="glyphicon glyphicon-plus">Commenter</span></button>
+		    
+
+		    {% if commentaire.getCommentaires() is not empty %}
+		    	{% for commentaire in commentaire.getCommentaires() %}
+		    		<div class="list-group-item">
+				    <p class="list-group-item-heading">{{ commentaire.getContenu()|nl2br }}
+
+				    {% if is_granted('ROLE_ADMIN') %}
+				    	<form class="pull-right" action="{{ path('intra_forum_remove_commentaire') }}" method="POST">
+				    		<input type="hidden" id="_id_thread" name ="_id_thread" value="{{ thread.getId() }}">
+							<input type="hidden" id="_id" name ="_id" value="{{ commentaire.getId() }}">
+							<button type="submit" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</form>
+					{% endif %}
+
+				    </p>
+				    <small class="list-group-item-text">{{ commentaire.getAuteur() }} - {{ commentaire.getDateCreation()|date('Y-m-d h:m') }}
+				    </small>
+				    </div>
+		    	{% endfor %}
+		    {% endif %}
+</div>
+		</div>
+
+			<div id="{{ commentaire.getId() }}" class="collapse">
+			    <form role="form" action={{ path('intra_forum_ajouter_commentaire_commentaire') }} method="POST" 
+				onsubmit="return (this._content.value.length > 0)">
+					 <div class="form-group">
+					  	<textarea class="form-control" rows="4" id="_content" name="_content"></textarea>
+					</div>
+					<input type="hidden" name="_id_commentaire" value="{{ commentaire.getId() }}">
+					<input type="hidden" name="_id_thread" value="{{ thread.getId() }}">
+					<button type="submit" class="btn btn-default">Commenter</button>
+				</form>
+				<hr>
+			</div>
+
+		{% endfor %}
+
+		<form role="form" action={{ path('intra_forum_ajouter_commentaire') }} method="POST" 
+		onsubmit="return (this._content.value.length > 0)">
+			 <div class="form-group">
+			  	<label for="_content">Message</label>
+			  	<textarea class="form-control" rows="4" id="_content" name="_content"></textarea>
+			</div>
+			<input type="hidden" name="_id_thread" value="{{ thread.getId() }}">
+			<button type="submit" class="btn btn-default">Répondre</button>
+		</form>
+
+	{% endif %}
+
+{% endblock %}
